@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import Navbar from './Navbar';
 
 export default function Cart() {
-  const {addToCart, removeFromCart, cart ,decrementToCart} = useCart();
+  const {addToCart, cart ,decrementToCart} = useCart();
 
   const calculateTotal = () =>
     cart.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -30,7 +30,7 @@ export default function Cart() {
                   <p>Price: ${item.price} | Quantity: {item.quantity}</p>
                 </div>
                 {getProductQuantity(item.id) > 0 ? (
-                    
+
                     <div className="d-flex align-items-center">
                       <button
                         className="btn btn-danger me-2"
@@ -57,7 +57,7 @@ export default function Cart() {
               </li>
             ))}
           </ul>
-          <h4>Total: Rs.{calculateTotal().toFixed(2)}</h4>
+          <h4>Total: ${calculateTotal().toFixed(2)}</h4>
         </div>
       )}
     </div>
