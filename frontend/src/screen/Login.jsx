@@ -20,7 +20,7 @@ export default function Login() {
       const payload = { email, password }; // Prepare request payload
 
       // Send POST request to the /login endpoint
-      const response = await axios.post("http://localhost:3000/login", payload);
+      const response = await axios.post("https://cloth-hub-5.onrender.com/login", payload);
 
 
       // If the login is successful

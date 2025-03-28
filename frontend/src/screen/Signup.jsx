@@ -17,7 +17,7 @@ export default function Signup() {
   
     try {
       
-      const response = await axios.post('http://localhost:3000/signup', payload);
+      const response = await axios.post('https://cloth-hub-5.onrender.com/signup', payload);
   
 
   
