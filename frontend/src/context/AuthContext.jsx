@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     try {
-      console.log("Attempting login for user:", email);
+
 
       const response = await axios.post("http://localhost:3000/login", {
         email,
@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }) => {
 
       if (response.data.success) {
         const authenticatedUser = response.data.user;
-        console.log("Login successful. User data:", authenticatedUser);
 
         localStorage.setItem("authUser", JSON.stringify(authenticatedUser));
 

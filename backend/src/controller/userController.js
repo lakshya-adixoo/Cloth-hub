@@ -9,14 +9,11 @@ export const signupPage = async (req, res) => {
       throw new Error('UserModel is not initialized');
     }
 
-    console.log('UserModel initialized:', UserModel);
 
     const user = await UserModel.findOne({ where: { email } });
-    console.log('Existing user:', user);
 
     if (!user) {
       const newUser = await UserModel.create({ email, password });
-      console.log('User created:', newUser);
       return res.status(201).json({ success: true, message: 'User added successfully' });
     }
 

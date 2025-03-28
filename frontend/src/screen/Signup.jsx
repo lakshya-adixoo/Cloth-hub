@@ -11,24 +11,21 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    console.log("Form submission started");
   
     const payload = { email, password }; 
-    console.log("Request payload:", payload);
+
   
     try {
       
       const response = await axios.post('http://localhost:3000/signup', payload);
   
-      console.log("Server response:", response.data);
+
   
       if (response.data.success) {
-        console.log("User signup successful");
         signup({ email, password }); 
         alert("Signup successful!");
         navigate("/login"); 
       } else {
-        console.log("Signup failed:", response.data.message);
         alert(response.data.message || "Signup failed");
       }
     } catch (error) {
@@ -39,7 +36,7 @@ export default function Signup() {
   
     setEmail('');
     setPassword('');
-    console.log("Form submission completed");
+    
   };
 
   return (

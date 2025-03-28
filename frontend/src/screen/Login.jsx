@@ -16,19 +16,15 @@ export default function Login() {
     setIsLoading(true); // Start loading when the request is initiated
 
     try {
-      console.log("Login process started");
 
       const payload = { email, password }; // Prepare request payload
-      console.log("Request payload:", payload);
 
       // Send POST request to the /login endpoint
       const response = await axios.post("http://localhost:3000/login", payload);
 
-      console.log("Server response:", response.data);
 
       // If the login is successful
       if (response.data.success) {
-        console.log("User login successful");
         login({ email, password }); // Call the login function to update user context
         alert("Login successful!"); // Notify the user
         navigate("/"); // Redirect to the homepage
@@ -46,7 +42,6 @@ export default function Login() {
     // Reset the input fields
     setEmail("");
     setPassword("");
-    console.log("Login process completed");
   };
 
   return (
