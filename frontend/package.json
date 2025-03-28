@@ -7,8 +7,7 @@
     "dev": "concurrently \"vite\" \"node ../backend/index.js\" ",
     "build": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
-  "postinstall": "npm install"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",
@@ -34,5 +33,9 @@
     "globals": "^15.15.0",
     "nodemon": "^3.1.9",
     "vite": "^6.2.3"
-  }
+  },
+  "engines": {
+  "node": ">=16.0.0",
+  "npm": ">=7.0.0"
+}
 }
