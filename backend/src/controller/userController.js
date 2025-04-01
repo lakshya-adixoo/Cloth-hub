@@ -12,14 +12,14 @@ export const signupPage = async (req, res) => {
 
     if (!user) {
       const newUser = await UserModel.create({ email, password });
-      return res.status(201).json({ success: true, message: 'User added successfully' });
+      return res.status(201).json({ success: true, message: 'User added successfully', newUser });
     }
 
     return res.status(200).json({ success: false, message: 'User already exists' });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      msg: 'Internal server error',
+      msg: 'Internal server error',err,
     });
   }
 };
@@ -64,7 +64,7 @@ export const LoginPage = async (req, res) => {
     } catch (err) {
       return res.status(500).json({
         success: false,
-        message: "Internal server error",
+        message: "Internal server error", err,
       });
     }
   };

@@ -7,7 +7,7 @@ import { useCart } from "../context/CartContext";
 export default function Home() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [ setSearchTerm] = useState("");
   const { addToCart, cart, decrementToCart } = useCart();
 
   useEffect(() => {

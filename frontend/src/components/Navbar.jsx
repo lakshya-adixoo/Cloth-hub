@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { useAuth } from '../context/AuthContext';
+import PropTypes from 'prop-types';
 
 export default function Navbar({onSearch}) {
 
@@ -77,6 +78,10 @@ export default function Navbar({onSearch}) {
         </form>
       </div>
     </nav>
+    
   );
-}
 
+}
+Navbar.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
