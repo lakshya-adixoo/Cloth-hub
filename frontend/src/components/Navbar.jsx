@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { useAuth } from '../context/AuthContext';
-import PropTypes from 'prop-types';
 
 export default function Navbar({onSearch}) {
 
@@ -18,9 +17,9 @@ export default function Navbar({onSearch}) {
     const calculateCartCount = () =>
       cart.reduce((total, item) => total + item.quantity, 0);
 
-
     const handleSearch = (e) =>{
         e.preventDefault();
+        console.log(searchItem);
         onSearch(searchItem);
     }
 
@@ -82,6 +81,4 @@ export default function Navbar({onSearch}) {
   );
 
 }
-Navbar.propTypes = {
-  onSearch: PropTypes.func.isRequired,
-};
+

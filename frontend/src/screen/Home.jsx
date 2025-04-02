@@ -7,7 +7,7 @@ import { useCart } from "../context/CartContext";
 export default function Home() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [ setSearchTerm] = useState("");
+  const [ SearchTerm , setSearchTerm] = useState("");
   const { addToCart, cart, decrementToCart } = useCart();
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function Home() {
 
   const handleSearch = (query) => {
     setSearchTerm(query);
+    console.log("query" , query);
     const filtered = data.filter((item) =>
       item.title.toLowerCase().includes(query.toLowerCase())
     );
