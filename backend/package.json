@@ -6,10 +6,16 @@
   "scripts": {
     "test": "jest"
   },
+  "overrides": {
+    "inflight": "^1.0.7"
+  },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@jest/core": "^29.7.0",
+    "@jest/reporters": "^29.7.0",
+    "@jest/transform": "^29.7.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "jest": "^29.7.0",

@@ -12,17 +12,16 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("https://fakestoreapi.com/products")
+      .get("http://localhost:3000/getProduct")
       .then((response) => {
-        setData(response.data);
-        setFilteredData(response.data);
+        setData(response.data.Products);
+        setFilteredData(response.data.Products);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   const handleSearch = (query) => {
     setSearchTerm(query);
-    console.log("query" , query);
     const filtered = data.filter((item) =>
       item.title.toLowerCase().includes(query.toLowerCase())
     );
@@ -40,7 +39,6 @@ export default function Home() {
     const productInCart = cart.find((item) => item.id === productId);
     return productInCart ? productInCart.quantity : 0;
   };
-
   return (
     <div>
       <Navbar onSearch={handleSearch} />

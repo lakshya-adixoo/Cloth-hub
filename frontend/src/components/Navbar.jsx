@@ -11,7 +11,7 @@ export default function Navbar({onSearch}) {
 
     const { cart } = useCart();
 
-      const { user, logout } = useAuth();
+    const { user, logout } = useAuth();
 
 
     const calculateCartCount = () =>
@@ -62,8 +62,6 @@ export default function Navbar({onSearch}) {
             </>
           )}
         </div>
-
-
 
         <form className="d-flex" onSubmit={handleSearch}>
           <input className="form-control me-2" 

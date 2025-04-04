@@ -20,7 +20,7 @@ export default function Signup() {
     console.log("Request payload:", payload);
 
     try {
-      const response = await axios.post("http://localhost:3000/signup", payload);
+      const response = await axios.post("http://localhost:3000/user/signup", payload);
       console.log("Server response:", response.data);
 
       if (response.data.success) {
