@@ -6,6 +6,7 @@ import Cart from './components/Cart'
 import Login from './screen/Login'
 import Signup from './screen/Signup'
 import PrivateRoute from './components/PrivateRoute'
+import AdminDashboard from './screen/AdminDashboard'
 
 
 
@@ -27,6 +28,7 @@ export default function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/admin" element={<AdminDashboard />} />
     </Routes>
     </BrowserRouter>
     </>

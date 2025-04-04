@@ -51,3 +51,42 @@ export const getProduct = async (req, res) => {
       });
     }
   };
+
+
+  export const deleteProduct = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await ProductModel.destroy({ where: { id } });
+  
+      if (!deleted) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+  
+      res.status(200).json({ success: true, message: 'Product deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Internal server error', err });
+    }
+  };
+  
+
+  export const updateProduct = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [updated] = await ProductModel.update(req.body, { where: { id } });
+  
+      if (!updated) {
+        return res.status(404).json({ success: false, message: 'Product not found or no changes applied' });
+      }
+  
+      const updatedProduct = await ProductModel.findOne({ where: { id } });
+  
+      res.status(200).json({ 
+        success: true, 
+        message: 'Product updated successfully', 
+        product: updatedProduct 
+      });
+    } catch (err) {
+      console.log(err)
+      res.status(500).json({ success: false, message: 'Internal server error', err });
+    }
+  };

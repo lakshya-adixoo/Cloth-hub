@@ -63,8 +63,11 @@ export const AuthProvider = ({ children }) => {
     window.location.reload();
   };
 
+  const isAdmin = user?.email === "admin@shop.com";
+
+
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={{ user,isAdmin, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

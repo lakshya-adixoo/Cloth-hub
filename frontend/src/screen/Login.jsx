@@ -27,10 +27,18 @@ export default function Login() {
 
       if (response.data.success) {
         console.log("User login successful");
-        login({ email, password });
+      
+        login({ email, password }); // this stores user in context + localStorage
+      
         alert("Login successful!");
-        navigate("/");
-      } else {
+      
+        // Redirect to admin if email matches admin address
+        if (email === "admin@shop.com") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }else {
         console.error("Login failed:", response.data.message);
         alert(response.data.message || "Login failed");
       }
