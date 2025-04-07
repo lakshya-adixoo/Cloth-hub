@@ -1,7 +1,7 @@
 import { ProductModel } from "../datasource/connect.database.js";
 
 
-export const getProduct = async (req, res) => {
+  export const getProduct = async (req, res) => {
     try {
       if (!ProductModel) {
         throw new Error('ProductModel is not initialized');

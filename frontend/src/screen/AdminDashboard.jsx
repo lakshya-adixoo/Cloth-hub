@@ -25,8 +25,8 @@ const AdminDashboard = () => {
     try {
       const res = await axios.get("http://localhost:3000/getProduct");
       setProducts(res.data.Products);
-    } catch (error) {
-      alert("Failed to fetch products.");
+    } catch (err) {
+      alert("Failed to fetch products." , err);
     }
   };
 
@@ -133,7 +133,7 @@ const AdminDashboard = () => {
           </button>
         )}
 
-        {/* Product List */}
+
         <h2 className="text-xl font-semibold mb-4">Product List</h2>
         <div className="space-y-4">
           {products.map((product) => (
