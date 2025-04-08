@@ -1,17 +1,25 @@
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import js from "@eslint/js";
-
+import pluginJest from "eslint-plugin-jest";
 
 export default defineConfig([
   { files: ["**/*.{js,mjs,cjs}"] },
-  { files: ["**/*.{js,mjs,cjs}"], languageOptions: { globals: globals.browser } },
-  { files: ["**/*.{js,mjs,cjs}"], plugins: { js }, extends: ["js/recommended"] },
-  module.exports = {
-    env: {
-      jest: true,
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    languageOptions: { globals: globals.browser },
+    plugins: { js, jest: pluginJest },
+    rules: {
+      "no-unused-vars": "off",
     },
-    plugins: ['jest'], 
-    extends: ['plugin:jest/recommended'],
-  },
+    settings: {
+      jest: {
+        version: "detect"
+      }
+    },
+    extends: [
+      "js/recommended",
+      "plugin:jest/recommended"
+    ]
+  }
 ]);
