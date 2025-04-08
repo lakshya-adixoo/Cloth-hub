@@ -22,6 +22,7 @@ export default function Home() {
 
   const handleSearch = (query) => {
     setSearchTerm(query);
+    console.log(SearchTerm);
     const filtered = data.filter((item) =>
       item.title.toLowerCase().includes(query.toLowerCase())
     );
