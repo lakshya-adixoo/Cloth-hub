@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     try {
-      console.log("Attempting login for user:", email);
 
       const response = await axios.post("http://localhost:3000/login", {
         email,
@@ -40,7 +39,6 @@ export const AuthProvider = ({ children }) => {
 
       if (response.data.success) {
         const authenticatedUser = response.data.user;
-        console.log("Login successful. User data:", authenticatedUser);
 
         localStorage.setItem("authUser", JSON.stringify(authenticatedUser));
 
@@ -49,7 +47,6 @@ export const AuthProvider = ({ children }) => {
         throw new Error(response.data.message || "Login failed");
       }
     } catch (error) {
-      console.error("Login error:", error);
       throw new Error(
         error.response?.data?.message ||
           "Invalid credentials. Please try again."
@@ -74,4 +71,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
