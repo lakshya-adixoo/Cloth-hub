@@ -1,6 +1,6 @@
 import { signupPage } from '../controller/userController.js'; 
 import { UserModel } from '../datasource/connect.database.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 jest.mock('../datasource/connect.database.js', () => ({
   UserModel: {
@@ -9,7 +9,7 @@ jest.mock('../datasource/connect.database.js', () => ({
   },
 }));
 
-jest.mock('bcrypt');
+jest.mock('bcryptjs');
 
 const mockResponse = () => {
   const res = {};

@@ -1,5 +1,5 @@
 import { UserModel } from '../datasource/connect.database.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const signupPage = async (req, res) => {
   const { email, password } = req.body;
