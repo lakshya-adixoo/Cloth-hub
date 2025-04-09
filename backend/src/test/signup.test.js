@@ -1,68 +1,93 @@
-import { signupPage } from "../controller/userController"; 
-import { UserModel } from "../datasource/connect.database";
-import express from "express";
-import request from "supertest";
+import { signupPage } from '../controller/userController.js'; 
+import { UserModel } from '../datasource/connect.database.js';
+import bcrypt from 'bcrypt';
 
-jest.mock("../datasource/connect.database", () => ({
+jest.mock('../datasource/connect.database.js', () => ({
   UserModel: {
     findOne: jest.fn(),
     create: jest.fn(),
   },
 }));
 
-const app = express();
-app.use(express.json());
-app.post("/signup", signupPage);
+jest.mock('bcrypt');
 
-describe("Signup Controller", () => {
+const mockResponse = () => {
+  const res = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  return res;
+};
+
+describe('signupPage controller', () => {
   afterEach(() => {
-    jest.clearAllMocks(); 
+    jest.clearAllMocks();
   });
 
-  test("should create a new user when email does not exist", async () => {
+  it('should create a new user if not exists', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password123',
+      },
+    };
+    const res = mockResponse();
+
     UserModel.findOne.mockResolvedValue(null);
+    bcrypt.hash.mockResolvedValue('hashedPassword123');
+    UserModel.create.mockResolvedValue({ id: 1, email: 'test@example.com' });
 
-    UserModel.create.mockResolvedValue({
-      email: "test@example.com",
-      password: "password123",
+    await signupPage(req, res);
+
+    expect(UserModel.findOne).toHaveBeenCalledWith({ where: { email: 'test@example.com' } });
+    expect(bcrypt.hash).toHaveBeenCalledWith('password123', 10);
+    expect(UserModel.create).toHaveBeenCalledWith({ email: 'test@example.com', password: 'hashedPassword123' });
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({
+      success: true,
+      message: 'User added successfully',
+      newUser: { id: 1, email: 'test@example.com' },
     });
-
-    const response = await request(app)
-      .post("/signup")
-      .send({ email: "test@example.com", password: "password123" });
-
-    expect(response.status).toBe(201);
-    expect(response.body.success).toBe(true);
-    expect(response.body.message).toBe("User added successfully");
-    expect(UserModel.findOne).toHaveBeenCalledWith({ where: { email: "test@example.com" } });
-    expect(UserModel.create).toHaveBeenCalledWith({ email: "test@example.com", password: "password123" });
   });
 
-  test("should return a 200 status if the user already exists", async () => {
-    UserModel.findOne.mockResolvedValue({
-      email: "test@example.com",
+  it('should return 200 and message if user already exists', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password123',
+      },
+    };
+    const res = mockResponse();
+
+    UserModel.findOne.mockResolvedValue({ id: 1, email: 'test@example.com' });
+
+    await signupPage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'User already exists',
     });
-
-    const response = await request(app)
-      .post("/signup")
-      .send({ email: "test@example.com", password: "password123" });
-
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(false);
-    expect(response.body.message).toBe("User already exists");
-    expect(UserModel.findOne).toHaveBeenCalledWith({ where: { email: "test@example.com" } });
   });
 
-  test("should return a 500 status if there is an error", async () => {
-    UserModel.findOne.mockRejectedValue(new Error("Database error"));
+  it('should handle internal server error', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password123',
+      },
+    };
+    const res = mockResponse();
 
-    const response = await request(app)
-      .post("/signup")
-      .send({ email: "test@example.com", password: "password123" });
+    UserModel.findOne.mockRejectedValue(new Error('DB error'));
 
-    expect(response.status).toBe(500);
-    expect(response.body.success).toBe(false);
-    expect(response.body.msg).toBe("Internal server error");
-    expect(UserModel.findOne).toHaveBeenCalledWith({ where: { email: "test@example.com" } });
+    await signupPage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      msg: 'Internal server error',
+      err: expect.any(Error),
+    });
   });
 });

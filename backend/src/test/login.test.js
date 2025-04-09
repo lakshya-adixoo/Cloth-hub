@@ -1,87 +1,132 @@
-import { LoginPage } from "../controller/userController";
- import { UserModel } from "../datasource/connect.database";
- import express from "express";
- import request from "supertest";
- 
- jest.mock("../datasource/connect.database", () => ({
-   UserModel: {
-     findOne: jest.fn(),
-   },
- }));
- 
- const app = express();
- app.use(express.json());
- app.post("/login", LoginPage);
- 
- describe("Login Controller", () => {
-   afterEach(() => {
-     jest.clearAllMocks();
-   });
- 
-   test("should return 400 if email or password is missing", async () => {
-     const response = await request(app)
-       .post("/login")
-       .send({ email: "test@example.com" });
- 
-     expect(response.status).toBe(400);
-     expect(response.body.success).toBe(false);
-     expect(response.body.message).toBe("Email and password are required");
-   });
- 
-   test("should return 404 if user is not found", async () => {
-     UserModel.findOne.mockResolvedValue(null);
- 
-     const response = await request(app)
-       .post("/login")
-       .send({ email: "test@example.com", password: "password123" });
- 
-     expect(response.status).toBe(404);
-     expect(response.body.success).toBe(false);
-     expect(response.body.message).toBe("User not found");
-   });
- 
-   test("should return 401 if password is incorrect", async () => {
-     UserModel.findOne.mockResolvedValue({
-       id: 1,
-       email: "test@example.com",
-       password: "wrongpassword",
-     });
- 
-     const response = await request(app)
-       .post("/login")
-       .send({ email: "test@example.com", password: "password123" });
- 
-     expect(response.status).toBe(401);
-     expect(response.body.success).toBe(false);
-     expect(response.body.message).toBe("Invalid email or password");
-   });
- 
-   test("should return 200 and user data if login is successful", async () => {
-     UserModel.findOne.mockResolvedValue({
-       id: 1,
-       email: "test@example.com",
-       password: "password123",
-     });
- 
-     const response = await request(app)
-       .post("/login")
-       .send({ email: "test@example.com", password: "password123" });
- 
-     expect(response.status).toBe(200);
-     expect(response.body.success).toBe(true);
-     expect(response.body.message).toBe("Login successful");
-     expect(response.body.user).toEqual({ id: 1, email: "test@example.com" });
-   });
- 
-   test("should return 500 if there is a server error", async () => {
-     UserModel.findOne.mockRejectedValue(new Error("Database error"));
- 
-     const response = await request(app)
-       .post("/login")
-       .send({ email: "test@example.com", password: "password123" });
- 
-     expect(response.status).toBe(500);
-     expect(response.body.success).toBe(false);
-     expect(response.body.message).toBe("Internal server error");
-   });
- });
+import { LoginPage } from '../controller/userController.js'; 
+import { UserModel } from '../datasource/connect.database.js';
+import bcrypt from 'bcrypt';
+
+jest.mock('../datasource/connect.database.js', () => ({
+  UserModel: {
+    findOne: jest.fn(),
+  },
+}));
+
+jest.mock('bcrypt');
+
+const mockResponse = () => {
+  const res = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  return res;
+};
+
+describe('LoginPage controller', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 400 if email or password is missing', async () => {
+    const req = {
+      body: {
+        email: '',
+        password: '',
+      },
+    };
+    const res = mockResponse();
+
+    await LoginPage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Email and password are required',
+    });
+  });
+
+  it('should return 404 if user not found', async () => {
+    const req = {
+      body: {
+        email: 'notfound@example.com',
+        password: 'password123',
+      },
+    };
+    const res = mockResponse();
+
+    UserModel.findOne.mockResolvedValue(null);
+
+    await LoginPage(req, res);
+
+    expect(UserModel.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@example.com' } });
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'User not found',
+    });
+  });
+
+  it('should return 401 if password does not match', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'wrongPassword',
+      },
+    };
+    const res = mockResponse();
+
+    UserModel.findOne.mockResolvedValue({ id: 1, email: 'test@example.com', password: 'hashedPwd' });
+    bcrypt.compare.mockResolvedValue(false);
+
+    await LoginPage(req, res);
+
+    expect(bcrypt.compare).toHaveBeenCalledWith('wrongPassword', 'hashedPwd');
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Invalid email or password',
+    });
+  });
+
+  it('should return 200 on successful login', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'correctPassword',
+      },
+    };
+    const res = mockResponse();
+
+    const mockUser = { id: 1, email: 'test@example.com', password: 'hashedPwd' };
+    UserModel.findOne.mockResolvedValue(mockUser);
+    bcrypt.compare.mockResolvedValue(true);
+
+    await LoginPage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: mockUser.id,
+        email: mockUser.email,
+      },
+    });
+  });
+
+  it('should handle internal server error', async () => {
+    const req = {
+      body: {
+        email: 'test@example.com',
+        password: 'password123',
+      },
+    };
+    const res = mockResponse();
+
+    UserModel.findOne.mockRejectedValue(new Error('DB Error'));
+
+    await LoginPage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Internal server error',
+      err: expect.any(Error),
+    });
+  });
+});
