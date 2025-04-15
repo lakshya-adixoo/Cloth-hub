@@ -41,8 +41,8 @@ snyk_security_scan:
   stage: snyk-security
   script:
     - snyk auth $SNYK_AUTH_TOKEN
-    - cd backend && snyk test  # Run Snyk scan for backend
-    - cd ../frontend && snyk test || true   # Run Snyk scan for frontend
+    - cd backend && snyk test  
+    - cd ../frontend && snyk test || true 
   only:
     - main
 

@@ -24,7 +24,16 @@ const AdminDashboard = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:3000/getProduct");
-      setProducts(res.data.Products);
+      console.log("API response:", res.data);
+  
+      const productsArray = res.data.Products || res.data.products || res.data;
+  
+      if (Array.isArray(productsArray)) {
+        setProducts(productsArray);
+      } else {
+        console.error("Unexpected response format", res.data);
+        alert("Unexpected data format received.");
+      }
     } catch (err) {
       alert("Failed to fetch products." , err);
     }
